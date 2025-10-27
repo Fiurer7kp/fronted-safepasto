@@ -1,42 +1,126 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+/* Reset y base */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  overflow: hidden;
+}
+
+.App {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header mejorado */
+.app-header {
+  background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+  color: white;
+  padding: 1rem;
   text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.app-header h1 {
+  font-size: 1.8rem;
+  margin-bottom: 0.3rem;
+  font-weight: 700;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
+.app-header p {
+  font-size: 1rem;
+  opacity: 0.9;
+}
+
+/* Layout principal - OCUPA TODA LA PANTALLA */
+.app-main {
+  display: flex;
+  flex: 1;
+  height: calc(100vh - 80px);
+  width: 100vw;
+  overflow: hidden;
+}
+
+/* Panel de formulario - OCUPA TODA LA ALTURA */
+.form-panel {
+  width: 350px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  overflow-y: auto;
+  flex-shrink: 0;
+}
+
+/* Panel del mapa - OCUPA TODO EL ESPACIO RESTANTE */
+.map-panel {
+  flex: 1;
+  background: #f8f9fa;
+  height: 100%;
+}
+
+/* Estilos para el formulario - SIN PADDING EXTERNO */
+.alert-form-container {
+  height: 100%;
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  display: flex;
+  flex-direction: column;
+}
+
+.alert-form-content {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .app-main {
+    flex-direction: column;
+    height: calc(100vh - 70px);
   }
-  to {
-    transform: rotate(360deg);
+  
+  .form-panel {
+    width: 100%;
+    height: 40%;
+  }
+  
+  .map-panel {
+    height: 60%;
+  }
+  
+  .app-header h1 {
+    font-size: 1.5rem;
+  }
+  
+  .app-header p {
+    font-size: 0.9rem;
   }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+/* Scrollbar personalizado */
+.form-panel::-webkit-scrollbar {
+  width: 6px;
 }
 
-.card {
-  padding: 2em;
+.form-panel::-webkit-scrollbar-track {
+  background: #f1f1f1;
 }
 
-.read-the-docs {
-  color: #888;
+.form-panel::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.form-panel::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
 }
