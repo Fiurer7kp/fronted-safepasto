@@ -23,7 +23,7 @@ function MapClickHandler({ onMapClick }: { onMapClick: (lat: number, lng: number
 }
 
 const PastoMap: React.FC = () => {
-  const center: [number, number] = [1.208, -77.277]; // Centro de Pasto
+  const center: [number, number] = [1.208, -77.277];
   const [selectedPosition, setSelectedPosition] = useState<[number, number] | null>(null);
 
   const handleMapClick = (lat: number, lng: number) => {
@@ -45,20 +45,18 @@ const PastoMap: React.FC = () => {
         
         <MapClickHandler onMapClick={handleMapClick} />
         
-        {/* Marcador del centro de Pasto */}
         <Marker position={center}>
           <Popup>
-            <strong>🎯 Centro de Pasto</strong><br/>
+            <strong>🎯 Pasto Center</strong><br/>
             Nariño, Colombia
           </Popup>
         </Marker>
 
-        {/* Marcador en posición seleccionada */}
         {selectedPosition && (
           <Marker position={selectedPosition}>
             <Popup>
-              <strong>📍 Ubicación seleccionada</strong><br/>
-              Haz click en el mapa para seleccionar ubicaciones
+              <strong>📍 Selected location</strong><br/>
+              Click the map to select locations
             </Popup>
           </Marker>
         )}

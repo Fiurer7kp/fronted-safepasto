@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { AlertService } from '../services/alertService';
 
 const AlertForm: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -8,16 +9,37 @@ const AlertForm: React.FC = () => {
     severity: 'medium'
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    alert(`🚨 Alerta reportada:\nTipo: ${formData.type}\nDescripción: ${formData.description}`);
-    // Reset form
-    setFormData({
-      type: 'security',
-      description: '',
-      location: '',
-      severity: 'medium'
-    });
+    setError(null);
+    setSuccess(null);
+    setLoading(true);
+    try {
+      const alertData = {
+        type: formData.type as any,
+        location: formData.location || 'Pasto, Nariño',
+        coordinates: { lat: 0, lng: 0 },
+        severity: formData.severity as any,
+        description: formData.description,
+        status: 'active' as const,
+      };
+      await AlertService.createAlert(alertData);
+      setSuccess('Alerta reportada correctamente');
+      setFormData({
+        type: 'security',
+        description: '',
+        location: '',
+        severity: 'medium'
+      });
+    } catch (err) {
+      setError((err as Error).message || 'Error reportando alerta');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleChange = (field: string, value: string) => {
@@ -27,163 +49,68 @@ const AlertForm: React.FC = () => {
     }));
   };
 
+  const canSubmit = formData.description.trim().length >= 10 && !loading;
+
   return (
     <div className="alert-form-container">
       <div className="alert-form-content">
-        <div style={{
-          background: 'white',
-          padding: '25px',
-          borderRadius: '15px',
-          boxShadow: '0 4px 15px rgba(0, 0, 0, 0.1)',
-          border: '1px solid #e9ecef',
-          height: 'fit-content',
-          minHeight: '100%'
-        }}>
-          <h3 style={{ 
-            color: '#2c3e50', 
-            marginBottom: '25px',
-            textAlign: 'center',
-            fontSize: '1.5rem',
-            fontWeight: '700'
-          }}>
-            📢 Reportar Alerta
-          </h3>
-          
-          <form onSubmit={handleSubmit}>
-            {/* Tipo de Alerta */}
-            <div style={{ marginBottom: '20px' }}>
-              <label style={{ 
-                display: 'block', 
-                marginBottom: '8px',
-                fontWeight: '600',
-                color: '#495057',
-                fontSize: '14px'
-              }}>
-                🚨 Tipo de Alerta:
-              </label>
+        <div className="card">
+          <h3>📢 Report Alert</h3>
+          <form onSubmit={handleSubmit} className="form-grid">
+            <label>
+              Alert Type
               <select 
                 value={formData.type}
                 onChange={(e) => handleChange('type', e.target.value)}
-                style={{ 
-                  width: '100%', 
-                  padding: '12px',
-                  border: '2px solid #e9ecef',
-                  borderRadius: '8px',
-                  fontSize: '14px',
-                  backgroundColor: 'white'
-                }}
               >
-                <option value="security">🔒 Seguridad/Robo</option>
-                <option value="event">🎉 Evento/Desfile</option>
-                <option value="traffic">🚗 Tráfico/Accidente</option>
-                <option value="weather">🌧️ Clima/Inundación</option>
-                <option value="community">👥 Comunitario</option>
+                <option value="security">🔒 Security/Theft</option>
+                <option value="event">🎉 Event/Parade</option>
+                <option value="traffic">🚗 Traffic/Accident</option>
+                <option value="weather">🌧️ Weather/Flood</option>
+                <option value="community">👥 Community</option>
               </select>
-            </div>
+            </label>
 
-            {/* Gravedad */}
-            <div style={{ marginBottom: '20px' }}>
-              <label style={{ 
-                display: 'block', 
-                marginBottom: '8px',
-                fontWeight: '600',
-                color: '#495057',
-                fontSize: '14px'
-              }}>
-                ⚠️ Nivel de Gravedad:
-              </label>
+            <label>
+              Severity Level
               <select 
                 value={formData.severity}
                 onChange={(e) => handleChange('severity', e.target.value)}
-                style={{ 
-                  width: '100%', 
-                  padding: '12px',
-                  border: '2px solid #e9ecef',
-                  borderRadius: '8px',
-                  fontSize: '14px',
-                  backgroundColor: 'white'
-                }}
               >
-                <option value="low">🟢 Baja</option>
-                <option value="medium">🟡 Media</option>
-                <option value="high">🔴 Alta</option>
+                <option value="low">🟢 Low</option>
+                <option value="medium">🟡 Medium</option>
+                <option value="high">🔴 High</option>
               </select>
-            </div>
+            </label>
 
-            {/* Descripción */}
-            <div style={{ marginBottom: '25px' }}>
-              <label style={{ 
-                display: 'block', 
-                marginBottom: '8px',
-                fontWeight: '600',
-                color: '#495057',
-                fontSize: '14px'
-              }}>
-                📝 Descripción:
-              </label>
+            <label>
+              Location
+              <input
+                type="text"
+                value={formData.location}
+                onChange={(e) => handleChange('location', e.target.value)}
+                placeholder="Neighborhood, street, reference"
+              />
+            </label>
+
+            <label>
+              Description
               <textarea 
                 value={formData.description}
                 onChange={(e) => handleChange('description', e.target.value)}
-                placeholder="Describe lo que está sucediendo..."
-                style={{ 
-                  width: '100%', 
-                  padding: '12px',
-                  border: '2px solid #e9ecef',
-                  borderRadius: '8px',
-                  fontSize: '14px',
-                  height: '120px',
-                  resize: 'vertical',
-                  backgroundColor: 'white',
-                  fontFamily: 'inherit'
-                }}
+                placeholder="Describe what is happening"
+                rows={5}
                 required
               />
-            </div>
+            </label>
 
-            {/* Botón de enviar */}
-            <button 
-              type="submit"
-              style={{
-                width: '100%',
-                padding: '15px',
-                background: 'linear-gradient(135deg, #e74c3c 0%, #c0392b 100%)',
-                color: 'white',
-                border: 'none',
-                borderRadius: '8px',
-                fontSize: '16px',
-                fontWeight: '600',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease',
-                boxShadow: '0 4px 15px rgba(231, 76, 60, 0.3)',
-                marginBottom: '20px'
-              }}
-              onMouseOver={(e) => {
-                e.currentTarget.style.transform = 'translateY(-2px)';
-                e.currentTarget.style.boxShadow = '0 6px 20px rgba(231, 76, 60, 0.4)';
-              }}
-              onMouseOut={(e) => {
-                e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = '0 4px 15px rgba(231, 76, 60, 0.3)';
-              }}
-            >
-              📢 Reportar Alerta
+            {error && <div className="error">{error}</div>}
+            {success && <div className="success">{success}</div>}
+
+            <button type="submit" className="primary" disabled={!canSubmit}>
+              {loading ? 'Sending…' : '📢 Report Alert'}
             </button>
           </form>
-
-          {/* Información de ubicación */}
-          <div style={{ 
-            padding: '15px',
-            background: 'linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%)',
-            borderRadius: '8px',
-            border: '1px solid #c3e6cb',
-            textAlign: 'center'
-          }}>
-            <strong style={{ color: '#155724' }}>📍 Pasto, Nariño</strong>
-            <br />
-            <small style={{ color: '#155724', opacity: 0.8 }}>
-              Sistema activo para la comunidad
-            </small>
-          </div>
         </div>
       </div>
     </div>
