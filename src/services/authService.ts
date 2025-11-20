@@ -2,7 +2,7 @@ import { request, setToken, clearToken } from './apiClient';
 import type { AuthLoginResponse } from '../types';
 
 export const login = async (email: string, password: string) => {
-  const data = await request<AuthLoginResponse>('/auth/login', {
+  const data = await request<AuthLoginResponse>('/api/auth/login', {
     method: 'POST',
     body: { email, password },
     timeoutMs: 15000,

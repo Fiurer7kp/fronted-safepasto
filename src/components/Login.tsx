@@ -23,7 +23,11 @@ export default function Login({ onSuccess }: Props) {
       const res = await login(email.trim(), password);
       onSuccess(res.user);
     } catch (err) {
-      setError((err as Error).message || 'Error inesperado');
+      const msg = (err as Error).message || 'Unexpected error';
+      const friendly = msg.includes('timed out')
+        ? 'Server may be waking up, please try again.'
+        : (msg.toLowerCase().includes('failed to fetch') ? 'Network error or CORS blocked. Please retry.' : msg);
+      setError(friendly);
     } finally {
       setLoading(false);
     }
@@ -69,10 +73,19 @@ export default function Login({ onSuccess }: Props) {
           className="text-input"
         />
         <small style={{color:'#6c757d'}}>{password ? `Password length: ${password.length}` : ''}</small>
-        {error && <div className="error">{error}</div>}
+        {error && (
+          <div className="error">
+            {error}
+          </div>
+        )}
         <button type="submit" disabled={!canSubmit} className="primary" aria-disabled={!canSubmit}>
           {loading ? 'Signing in…' : 'Sign In'}
         </button>
+        {error && !loading && (
+          <button type="button" className="secondary" onClick={() => setError(null)}>
+            Try again
+          </button>
+        )}
       </form>
     </div>
   );
