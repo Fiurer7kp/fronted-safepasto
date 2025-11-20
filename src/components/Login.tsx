@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { login } from '../services/authService';
+import { request } from '../services/apiClient';
 import type { User } from '../types';
 
 interface Props {
@@ -32,6 +33,10 @@ export default function Login({ onSuccess }: Props) {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    request('/api/health', { timeoutMs: 8000 }).catch(() => {});
+  }, []);
 
   return (
     <div className="card">
