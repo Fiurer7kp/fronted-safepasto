@@ -1,6 +1,25 @@
-# React + TypeScript + Vite
+# 🚨 SafePasto Frontend - Sistema de Alertas Comunitarias
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Frontend desarrollado en React + TypeScript + Vite para el sistema de alertas comunitarias de Pasto, Nariño.
+
+## 🚀 Características
+
+- ✅ Interfaz moderna y responsive
+- ✅ Autenticación JWT
+- ✅ Mapa interactivo con Leaflet
+- ✅ Gestión de alertas en tiempo real
+- ✅ Configuración para producción en Vercel
+
+## 🛠️ Tecnologías
+
+- **React 19** + **TypeScript**
+- **Vite** - Build tool
+- **Leaflet** - Mapas interactivos
+- **Supabase** - Base de datos y tiempo real (opcional)
+
+## 📋 Prerrequisitos
+
+- Node.js 18+ y npm
 
 Currently, two official plugins are available:
 
