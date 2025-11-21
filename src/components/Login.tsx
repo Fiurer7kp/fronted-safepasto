@@ -8,12 +8,12 @@ interface Props {
 }
 
 export default function Login({ onSuccess }: Props) {
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const canSubmit = email.includes('@') && password.length >= 6 && !loading;
+  const canSubmit = username.length >= 3 && password.length >= 6 && !loading;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,7 +21,7 @@ export default function Login({ onSuccess }: Props) {
     setError(null);
     setLoading(true);
     try {
-      const res = await login(email.trim(), password);
+      const res = await login(username.trim(), password);
       onSuccess(res.user);
     } catch (err) {
       const msg = (err as Error).message || 'Unexpected error';
@@ -42,24 +42,23 @@ export default function Login({ onSuccess }: Props) {
     <div className="card">
       <h2>Sign In</h2>
       <form onSubmit={handleSubmit} className="form-grid">
-        <label htmlFor="email">Email</label>
+        <label htmlFor="username">Username</label>
         <input
-          id="email"
-          name="email"
+          id="username"
+          name="username"
           type="text"
-          inputMode="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          onInput={(e) => setEmail((e.target as HTMLInputElement).value)}
-          placeholder="tu@correo.com"
-          autoComplete="email"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          onInput={(e) => setUsername((e.target as HTMLInputElement).value)}
+          placeholder="tu_usuario"
+          autoComplete="username"
           autoFocus
           required
           spellCheck={false}
           tabIndex={0}
           className="text-input"
         />
-        <small style={{color:'#6c757d'}}>{email ? `Email: ${email}` : ''}</small>
+        <small style={{color:'#6c757d'}}>{username ? `Username: ${username}` : ''}</small>
 
         <label htmlFor="password">Password</label>
         <input
